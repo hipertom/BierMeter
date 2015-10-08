@@ -14,7 +14,6 @@ public class TimerDemo implements ActionListener {
   
   public static void main(int args) {
     TimerDemo td = new TimerDemo();
-    
     }
 
   @Override
