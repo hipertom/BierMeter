@@ -20,19 +20,21 @@ import javax.swing.Timer;
  */
 public class BierMeter extends JFrame implements ActionListener {
     
-    boolean beginner = false;
-    int currentWaitTime = 0;
+    boolean beginnerDriver = false;
+    int timeToWait = 0;
+    int timePassed = 0;
+    int timePerDrink = 5400; // tijd wachten in sec per drankje (5400sec is 1.5uur)
     int beers = 0;
-    int waitTime = 60;
+    int gramsOfAlc = 0;
     
-    private final Timer timer = new Timer(100, this);
+    private final Timer timer = new Timer(100, this); // TIMER aanmaken, eerste getal is interval (1000 is 1 sec)
     private JLabel label;
     
     BierMeter() {
         super("Biermeter");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setPreferredSize(new Dimension(1280, 960));
-        setSize(new Dimension(1280, 960));
+        setPreferredSize(new Dimension(480, 640));
+        setSize(new Dimension(480, 640));
         setLocationRelativeTo(null);
         
         // Zet alle panels erin    
@@ -49,8 +51,9 @@ public class BierMeter extends JFrame implements ActionListener {
         JButton startButton = new JButton("+1 Biertje");
         
         startButton.addActionListener((ActionEvent e) -> {
+            // Uitvoeren wanneer button press
             beers++;
-            currentWaitTime = waitTime * beers;
+            timeToWait += timePerDrink;
                     
             if(!timer.isRunning()) {
                 timer.start();
@@ -64,13 +67,14 @@ public class BierMeter extends JFrame implements ActionListener {
     
     /*
     * Countdown naar wanneer je weer mag rijden
+    * word elke seconden uitgevoerd
     */
     @Override
     public void actionPerformed(ActionEvent e) {
         if(currentWaitTime == 0) {
-            label.setText("Je mag weer rijden, koekwaus.");
+            label.setText("U bent compleet nuchter!");
         } else {
-            label.setText("Je moet " + String.valueOf(currentWaitTime--) + " seconden wachten.");
+            label.setText("Je moet " + currentWaitTime-- + " seconden wachten!");
         }
     }
 }
