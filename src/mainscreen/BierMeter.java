@@ -26,8 +26,11 @@ public class BierMeter extends JFrame implements ActionListener {
     int timePerDrink = 5400; // tijd wachten in sec per drankje (5400sec is 1.5uur)
     int beers = 0;
     int gramsOfAlc = 0;
+    int hours;
+    int minutes;
+    int seconds;
     
-    private final Timer timer = new Timer(100, this); // TIMER aanmaken, eerste getal is interval (1000 is 1 sec)
+    private final Timer timer = new Timer(1000, this); // TIMER aanmaken, eerste getal is interval (1000 is 1 sec)
     private JLabel label;
     
     BierMeter() {
@@ -71,10 +74,18 @@ public class BierMeter extends JFrame implements ActionListener {
     */
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(currentWaitTime == 0) {
+        if(timeToWait == 0) {
             label.setText("U bent compleet nuchter!");
+            timer.stop();
         } else {
-            label.setText("Je moet " + currentWaitTime-- + " seconden wachten!");
+            hours = timeToWait / 3600;
+            minutes = (timeToWait % 3600) / 60;
+            seconds = timeToWait % 60;
+            label.setText(
+                   hours+"UUR "+
+                   minutes+"MINUTEN "+
+                   seconds+ "SECONDEN");
+            timeToWait--;
         }
     }
 }
