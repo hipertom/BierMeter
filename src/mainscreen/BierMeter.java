@@ -30,8 +30,11 @@ public class BierMeter extends JFrame implements ActionListener {
     int minutes;
     int seconds;
     
+    // frames, panels etc
     private final Timer timer = new Timer(1000, this); // TIMER aanmaken, eerste getal is interval (1000 is 1 sec)
-    private JLabel label;
+    private JLabel lblHour;
+    private JLabel lblMin;
+    private JLabel lblSec;
     
     BierMeter() {
         super("Biermeter");
@@ -50,7 +53,9 @@ public class BierMeter extends JFrame implements ActionListener {
     
     private void init() {
         JPanel container = new JPanel();
-        label = new JLabel("Je mag nu nog rijden!");
+        lblHour = new JLabel("0UUR");
+        lblMin = new JLabel("0MINUTEN");
+        lblSec = new JLabel("0SECONDEN");
         JButton startButton = new JButton("+1 Biertje");
         
         startButton.addActionListener((ActionEvent e) -> {
@@ -63,8 +68,11 @@ public class BierMeter extends JFrame implements ActionListener {
             }
         });
         
+        
         container.add(startButton);
-        container.add(label);
+        container.add(lblHour);
+        container.add(lblMin);
+        container.add(lblSec);
         add(container);
     }
     
@@ -75,16 +83,17 @@ public class BierMeter extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if(timeToWait == 0) {
-            label.setText("U bent compleet nuchter!");
+            lblHour.setText("U bent compleet nuchter!");
             timer.stop();
         } else {
+            //omrekenen van secondes naar uren en minuten
             hours = timeToWait / 3600;
             minutes = (timeToWait % 3600) / 60;
             seconds = timeToWait % 60;
-            label.setText(
-                   hours+"UUR "+
-                   minutes+"MINUTEN "+
-                   seconds+ "SECONDEN");
+            //print uren min en sec op label
+            lblHour.setText(hours+"UUR");
+            lblMin.setText(minutes+"MINUTEN ");
+            lblSec.setText(seconds+ "SECONDEN");
             timeToWait--;
         }
     }
