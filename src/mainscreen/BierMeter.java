@@ -56,9 +56,9 @@ public class BierMeter extends JFrame implements ActionListener {
         lblHour = new JLabel("0UUR");
         lblMin = new JLabel("0MINUTEN");
         lblSec = new JLabel("0SECONDEN");
-        JButton startButton = new JButton("+1 Biertje");
+        JButton plusBtn = new JButton("+1 Biertje");
         
-        startButton.addActionListener((ActionEvent e) -> {
+        plusBtn.addActionListener((ActionEvent e) -> {
             // Uitvoeren wanneer button press
             beers++;
             timeToWait += timePerDrink;
@@ -68,8 +68,16 @@ public class BierMeter extends JFrame implements ActionListener {
             }
         });
         
+        // plaatsing van elementen
+        container.setLayout(null);
+        plusBtn.setLocation(0,0);
+        lblHour.setLocation(27, 20);
         
-        container.add(startButton);
+        plusBtn.setSize(10,10);
+        lblHour.setSize(86, 14);
+        
+        // elementen toevoegen aan container 
+        container.add(plusBtn);
         container.add(lblHour);
         container.add(lblMin);
         container.add(lblSec);
