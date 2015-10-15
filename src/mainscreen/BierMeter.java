@@ -25,7 +25,7 @@ import javax.swing.Timer;
 
 /**
  *
- * @author Tom
+ * @author Tom Grootjans
  */
 public class BierMeter extends JFrame implements ActionListener {
     
