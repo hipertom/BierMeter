@@ -33,12 +33,14 @@ public class BierMeter extends JFrame implements ActionListener {
     boolean beginnerDriver = false;
     int timeToWait = 0;
     int timePassed = 0;
-    int timePerDrink = 5400; // tijd wachten in sec per drankje (5400sec is 1.5uur)
+    int timePerBeer = 5400; // tijd wachten in sec per drankje (5400sec is 1.5uur)
     int beers = 0;
-    int gramsOfAlc = 0;
+    double gramsOfAlcPerBeer = 10.00;     // 10 gram alcohol per bier (er gaat 
+    double promilleLimit = 0.50;
+    double promilleLimitBeginner = 0.20;
     int hours = 0;
-    int minutes = 00;
-    int seconds = 00;
+    int minutes = 0;
+    int seconds = 0;
 
     // frames, panels etc
     private final Timer timer = new Timer(1000, this); // TIMER aanmaken, eerste getal is interval (1000 is 1 sec)
@@ -96,7 +98,7 @@ public class BierMeter extends JFrame implements ActionListener {
         plusBtn.addActionListener((ActionEvent e) -> {
             // Uitvoeren wanneer button press
             beers++;
-            timeToWait += timePerDrink;
+            timeToWait += timePerBeer;
 
             if (!timer.isRunning()) {
                 timer.start();
