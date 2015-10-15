@@ -6,12 +6,10 @@
 package mainscreen;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
@@ -38,6 +36,10 @@ public class BierMeter extends JFrame implements ActionListener {
     double gramsOfAlcPerBeer = 10.00;     // 10 gram alcohol per bier (er gaat 
     double promilleLimit = 0.50;
     double promilleLimitBeginner = 0.20;
+    String statusNuchter = "U bent compleet nuchter";
+    String statusWelRijden = "U Heeft wel wat alcohol in uw lichaam maar u mag WEL rijden";
+    String staturNietRijden = "Er bevind zich te veel alcohol in uw lichaam u mag NIET rijden!";
+    String huidigeStatus = statusNuchter;
     int hours = 0;
     int minutes = 0;
     int seconds = 0;
@@ -51,8 +53,9 @@ public class BierMeter extends JFrame implements ActionListener {
     private JLabel lblMinTxt;
     private JLabel lblSec;
     private JLabel lblSecTxt;
+    private JLabel lblStatus;
     private JPanel container;
-    private JPanel timerContainer;
+    private JPanel containerTimer;
     
 
     BierMeter() {
@@ -70,28 +73,34 @@ public class BierMeter extends JFrame implements ActionListener {
 
     private void init() {
         // variable definieren
-        timerContainer = new JPanel();
+        
         container = new JPanel();
-        lblHour = new JLabel(Integer.toString(hours));
-        lblHourTxt = new JLabel("UUR ");
-        lblMin = new JLabel(Integer.toString(minutes));
-        lblMinTxt = new JLabel("MINUTEN ");
-        lblSec = new JLabel(Integer.toString(seconds));
-        lblSecTxt = new JLabel("SECONDEN ");
+        containerTimer = new JPanel();
+        
         plusBtn = new JButton("+1 Biertje");
+        lblHour = new JLabel(Integer.toString(hours));
+        lblHourTxt = new JLabel("UUR  ");
+        lblMin = new JLabel(Integer.toString(minutes));
+        lblMinTxt = new JLabel("MINUTEN  ");
+        lblSec = new JLabel(Integer.toString(seconds));
+        lblSecTxt = new JLabel("SECONDEN");
+        lblStatus = new JLabel(huidigeStatus);
+
         
         // tekst opmaak
+                //lblHourTxt.setBorder(BorderFactory.createLineBorder(Color.black));
+
         lblHour.setFont(new Font("", Font.BOLD, 52));
         lblMin.setFont(new Font("", Font.BOLD, 52));
         lblSec.setFont(new Font("", Font.BOLD, 52));
-        lblHour.setPreferredSize(new Dimension(58,40));
-        lblMin.setPreferredSize(new Dimension(58,40));
-        lblSec.setPreferredSize(new Dimension(58,40));
+
         
         // center layout opmaak
         container.setLayout(new BoxLayout(container, BoxLayout.PAGE_AXIS));
-        container.setAlignmentX(Component.CENTER_ALIGNMENT);
+        containerTimer.setLayout(new BoxLayout(containerTimer, BoxLayout.LINE_AXIS));
+        containerTimer.setAlignmentX(Component.CENTER_ALIGNMENT);
         plusBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
+        lblStatus.setAlignmentX(Component.CENTER_ALIGNMENT);
         
         
         // action van button
@@ -111,16 +120,25 @@ public class BierMeter extends JFrame implements ActionListener {
     private void render() {
         // inladen en weergeven van blokken in het scherm
         //container.add(Box.createVerticalBox());
-        container.add(Box.createRigidArea(new Dimension(0, 60)));
+        
+        //plus btn
+        container.add(Box.createRigidArea(new Dimension(0, 40)));
         container.add(plusBtn);
-        container.add(Box.createRigidArea(new Dimension(0, 120)));
-        timerContainer.add(lblHour);
-        timerContainer.add(lblHourTxt);
-        timerContainer.add(lblMin);
-        timerContainer.add(lblMinTxt);
-        timerContainer.add(lblSec);
-        timerContainer.add(lblSecTxt);
-        container.add(timerContainer);
+        
+        // timer labels
+        container.add(Box.createRigidArea(new Dimension(0, 200)));
+        containerTimer.add(lblHour);
+        containerTimer.add(lblHourTxt);
+        containerTimer.add(lblMin);
+        containerTimer.add(lblMinTxt);
+        containerTimer.add(lblSec);
+        containerTimer.add(lblSecTxt);
+        container.add(containerTimer);
+        
+        //status
+        //container.add(Box.createRigidArea(new Dimension(0, 20)));
+        container.add(lblStatus);
+        
         this.add(container, BorderLayout.CENTER);
         
         pack();
@@ -134,7 +152,7 @@ public class BierMeter extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (timeToWait == 0) {
-            lblHour.setText("U bent compleet nuchter!");
+            huidigeStatus = statusNuchter;
             timer.stop();
         } else {
             //omrekenen van secondes naar uren en minuten
@@ -146,6 +164,9 @@ public class BierMeter extends JFrame implements ActionListener {
             lblMin.setText(Integer.toString(minutes));
             lblSec.setText(Integer.toString(seconds));
             timeToWait--;
+            huidigeStatus = statusWelRijden;
         }
+        lblStatus.setText(huidigeStatus);
+        
     }
 }

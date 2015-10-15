@@ -11,7 +11,6 @@ package mainscreen;
  */
 class Main{
     public static void main(String[] args) {
-        new BierMeter();
+        BierMeter bierMeter = new BierMeter();
     }       
 }
-
