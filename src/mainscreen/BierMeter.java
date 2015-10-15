@@ -6,13 +6,12 @@
 package mainscreen;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.BorderFactory;
+import java.text.DecimalFormat;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -30,22 +29,30 @@ public class BierMeter extends JFrame implements ActionListener {
     // variable aanmaken
     boolean beginnerDriver = false;
     int timeToWait = 0;
-    int timePassed = 0;
-    int timePerBeer = 5400; // tijd wachten in sec per drankje (5400sec is 1.5uur)
-    int beers = 0;
-    double gramsOfAlcPerBeer = 10.00;     // 10 gram alcohol per bier (er gaat 
+    int timePerBeer = 4500; // tijd wachten in sec per drankje (4500sec is 75 min)
+    double promilleInBlood = 0;
     double promilleLimit = 0.50;
     double promilleLimitBeginner = 0.20;
+    double promillePerBeer = 0.25;
+    double promilleAftrekken = promillePerBeer / timePerBeer;
+    int hours = 0;
+    int minutes = 0;
+    int seconds = 0;
+    DecimalFormat df = new DecimalFormat("#.###");
+
+    // status waarschuwingen
     String statusNuchter = "U bent compleet nuchter";
     String statusWelRijden = "U Heeft wel wat alcohol in uw lichaam maar u mag WEL rijden";
     String staturNietRijden = "Er bevind zich te veel alcohol in uw lichaam u mag NIET rijden!";
     String huidigeStatus = statusNuchter;
-    int hours = 0;
-    int minutes = 0;
-    int seconds = 0;
 
-    // frames, panels etc
-    private final Timer timer = new Timer(1000, this); // TIMER aanmaken, eerste getal is interval (1000 is 1 sec)
+    // Aanmaken onderdelen
+    // Timer
+    private final Timer timer = new Timer(10, this); // TIMER aanmaken, eerste getal is interval (1000 is 1 sec)
+    // Containers
+    private JPanel container;
+    private JPanel containerTimer;
+    // Objecten in containers (van boven naar beneden)
     private JButton plusBtn;
     private JLabel lblHour;
     private JLabel lblHourTxt;
@@ -54,8 +61,8 @@ public class BierMeter extends JFrame implements ActionListener {
     private JLabel lblSec;
     private JLabel lblSecTxt;
     private JLabel lblStatus;
-    private JPanel container;
-    private JPanel containerTimer;
+    private JLabel lblPromille;
+    
     
 
     BierMeter() {
@@ -85,6 +92,7 @@ public class BierMeter extends JFrame implements ActionListener {
         lblSec = new JLabel(Integer.toString(seconds));
         lblSecTxt = new JLabel("SECONDEN");
         lblStatus = new JLabel(huidigeStatus);
+        lblPromille = new JLabel(Double.toString(promilleInBlood));
 
         
         // tekst opmaak
@@ -106,7 +114,7 @@ public class BierMeter extends JFrame implements ActionListener {
         // action van button
         plusBtn.addActionListener((ActionEvent e) -> {
             // Uitvoeren wanneer button press
-            beers++;
+            promilleInBlood += promillePerBeer; 
             timeToWait += timePerBeer;
 
             if (!timer.isRunning()) {
@@ -136,8 +144,8 @@ public class BierMeter extends JFrame implements ActionListener {
         container.add(containerTimer);
         
         //status
-        //container.add(Box.createRigidArea(new Dimension(0, 20)));
         container.add(lblStatus);
+        container.add(lblPromille);
         
         this.add(container, BorderLayout.CENTER);
         
@@ -167,6 +175,8 @@ public class BierMeter extends JFrame implements ActionListener {
             huidigeStatus = statusWelRijden;
         }
         lblStatus.setText(huidigeStatus);
+        lblPromille.setText(df.format(promilleInBlood));
+        promilleInBlood = promilleInBlood - promilleAftrekken;  
         
     }
 }
