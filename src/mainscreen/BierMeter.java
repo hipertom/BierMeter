@@ -27,9 +27,9 @@ import javax.swing.Timer;
 public class BierMeter extends JFrame implements ActionListener {
 
     // variable aanmaken
-    boolean beginnerDriver = false;
+    boolean isBeginnerDriver = false;
     int timeToWait = 0;
-    int timePerBeer = 4500; // tijd wachten in sec per drankje (4500sec is 75 min)
+    int timePerBeer = 100; // tijd wachten in sec per drankje (4500sec is 75 min)
     double promilleInBlood = 0;
     double promilleLimit = 0.50;
     double promilleLimitBeginner = 0.20;
@@ -41,13 +41,13 @@ public class BierMeter extends JFrame implements ActionListener {
 
     // status waarschuwingen
     String statusNuchter = "U bent compleet nuchter";
-    String statusWelRijden = "U Heeft wel wat alcohol in uw lichaam maar u mag WEL rijden";
-    String staturNietRijden = "Er bevind zich te veel alcohol in uw lichaam u mag NIET rijden!";
+    String statusWelRijden = "U Heeft alcohol in uw lichaam en u mag WEL rijden";
+    String statusNietRijden = "U MAG NIET RIJDEN!!! Er bevind zich te veel alcohol in uw lichaam!";
     String huidigeStatus = statusNuchter;
 
     // Aanmaken onderdelen
     //
-    private final Timer timer = new Timer(1, this); // TIMER aanmaken, eerste getal is interval (1000 is 1 sec)
+    private final Timer timer = new Timer(100, this); // TIMER aanmaken, eerste getal is interval (1000 is 1 sec)
     private final DecimalFormat df = new DecimalFormat("#.###");
     // Containers
     private JPanel container;
@@ -152,20 +152,13 @@ public class BierMeter extends JFrame implements ActionListener {
      */
     @Override
     public void actionPerformed(ActionEvent e) {
-        /*
-        
-        !!!!! timer blijf op 1 sec staant (moet je fixen man)
-        
-        
-        */
-        lblStatus.setText(huidigeStatus);
-        //lblPromille.setText(df.format(promilleInBlood));
-        lblHour.setText(Integer.toString(hours));
-        lblMin.setText(Integer.toString(minutes));
-        lblSec.setText(Integer.toString(seconds));
-        
         if (timeToWait == 0) {
-            //timer.stop();
+            // reset voor zekerheid
+            hours = 0;
+            minutes = 0;
+            seconds = 0;
+            promilleInBlood = 0;
+            
         } else {
             //omrekenen van secondes naar uren en minuten
             hours = timeToWait / 3600;
@@ -173,8 +166,32 @@ public class BierMeter extends JFrame implements ActionListener {
             seconds = timeToWait % 60;
 
             timeToWait--;
-            //promilleInBlood = promilleInBlood - promilleAftrekken;
+            
+            // zorgen dat promille niet minder dan 0 kan worden
+            if(promilleInBlood-promilleAftrekken <= 0){
+                promilleInBlood = 0;
+            } else {
+                promilleInBlood -= promilleAftrekken;
+            }
+            
 
         }
+
+        if (promilleInBlood == 0) {
+            huidigeStatus = statusNuchter;
+        } else if (isBeginnerDriver && promilleInBlood < promilleLimitBeginner) {
+            huidigeStatus = statusWelRijden;
+        } else if (!isBeginnerDriver && promilleInBlood < promilleLimit) {
+            huidigeStatus = statusWelRijden;
+        } else {
+            huidigeStatus = statusNietRijden;
+        }
+
+        lblStatus.setText(huidigeStatus);
+        lblPromille.setText(df.format(promilleInBlood));
+        lblHour.setText(Integer.toString(hours));
+        lblMin.setText(Integer.toString(minutes));
+        lblSec.setText(Integer.toString(seconds));
+
     }
 }
