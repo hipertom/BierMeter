@@ -43,7 +43,7 @@ public class BierMeter extends JFrame implements ActionListener {
     // status waarschuwingen
     String statusNuchter = "U bent compleet nuchter";
     String statusWelRijden = "U mag nog wel rijden.";
-    String statusNietRijden = "U MAG NIET RIJDEN!!!";
+    String statusNietRijden = "U MAG NIET MEER RIJDEN!!!";
     String huidigeStatus = statusNuchter;
 
     // Aanmaken variabelen voor panels, labels, buttons etc
