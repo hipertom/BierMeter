@@ -5,7 +5,6 @@
  */
 package mainscreen;
 
-import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -21,10 +20,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.Timer;
 
-/**
- *
- * @author Tom Grootjans
- */
 public class BierMeter extends JFrame implements ActionListener {
     // hulpmiddelen aanmaken
     private final Timer timer = new Timer(1000, this); // TIMER aanmaken, eerste getal is interval (1000 is 1 sec)
@@ -39,7 +34,7 @@ public class BierMeter extends JFrame implements ActionListener {
     double promilleLimitBeginner = 0.20;
     double promillePerBeer = 0.25;
     double promilleAftrekken = promillePerBeer / timePerBeer;
-    int amountToAdd;
+    int amountToAdd = 0;
     int beers;
     int hours = 0;
     int minutes = 0;
@@ -57,10 +52,11 @@ public class BierMeter extends JFrame implements ActionListener {
     // Containers
     private JPanel container;
     private JPanel containerTimer;
+    
     // Objecten in containers (van boven naar beneden)
     private JTextField  textField;
     private JButton     addButton;
-    private JButton     plusButton;
+    private JButton     plusOneButton;
     private JLabel      lblPromille;
     private JLabel      lblStatus;
     
@@ -90,11 +86,10 @@ public class BierMeter extends JFrame implements ActionListener {
         container = new JPanel();
         containerTimer = new JPanel();
         
-        //toevoegen
+        // panels, buttons, en labels aanmaken met eventuele tekst erin
         textField = new JTextField(5);
         addButton = new JButton("add ");
-        plusButton = new JButton("+1 Biertje");
-        
+        plusOneButton = new JButton("+1 Biertje");
         
         lblPromille = new JLabel(promilleString);
         lblStatus = new JLabel(huidigeStatus);
@@ -112,23 +107,24 @@ public class BierMeter extends JFrame implements ActionListener {
         lblSec.setFont(new Font("", Font.BOLD, 52));
         lblStatus.setFont(new Font("", Font.BOLD, 16));
         
+        // grote van textField aanpassen
         textField.setMaximumSize( textField.getPreferredSize());
         
         // set layout voor (sub)containers
         container.setLayout(new BoxLayout(container, BoxLayout.PAGE_AXIS));
         containerTimer.setLayout(new BoxLayout(containerTimer, BoxLayout.LINE_AXIS));
         
-        
         // force center alignment
         containerTimer.setAlignmentX(Component.CENTER_ALIGNMENT);
         addButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        plusButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        plusOneButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         lblStatus.setAlignmentX(Component.CENTER_ALIGNMENT);
         lblPromille.setAlignmentX(Component.CENTER_ALIGNMENT);
         lblTxtWachten.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         // action van +1 button
         addButton.addActionListener((ActionEvent e) -> {
+            // kijken of textfield is ingevuld met nummer
             try {
                 amountToAdd =  Integer.parseInt(textField.getText());
             } catch (NumberFormatException error) {
@@ -139,7 +135,7 @@ public class BierMeter extends JFrame implements ActionListener {
         });
         
         // action van aantal toevoegen 
-        plusButton.addActionListener((ActionEvent e) -> {
+        plusOneButton.addActionListener((ActionEvent e) -> {
             addSomeBeer(1);
         });
     }
@@ -152,10 +148,9 @@ public class BierMeter extends JFrame implements ActionListener {
         container.add(textField);
         container.add(addButton);
         
-        
         // plus btn
         container.add(Box.createRigidArea(new Dimension(0, 10)));
-        container.add(plusButton);
+        container.add(plusOneButton);
         
         // promille plus status
         container.add(Box.createRigidArea(new Dimension(0, 20)));
@@ -175,10 +170,10 @@ public class BierMeter extends JFrame implements ActionListener {
         // wacht text label
         container.add(lblTxtWachten);
         
+        // container tovoegen aan JFrame
         this.add(container);
 
-        pack();
-        setVisible(true);
+        this.setVisible(true);
     }
 
     /*
@@ -208,10 +203,9 @@ public class BierMeter extends JFrame implements ActionListener {
             } else {
                 promilleInBlood -= promilleAftrekken;
             }
-            
-
         }
-
+        
+        // promille tekst weergeven
         if (promilleInBlood == 0) {
             huidigeStatus = statusNuchter;
         } else if (isBeginnerDriver && promilleInBlood < promilleLimitBeginner) {
@@ -221,16 +215,17 @@ public class BierMeter extends JFrame implements ActionListener {
         } else {
             huidigeStatus = statusNietRijden;
         }
-
+        
+        //updaten van alle label's
         lblStatus.setText(huidigeStatus);
         promilleString = "U heeft "+df.format(promilleInBlood)+"‰ alcohol in uw bloed";
         lblPromille.setText(promilleString);
         lblHour.setText(Integer.toString(hours));
         lblMin.setText(Integer.toString(minutes));
         lblSec.setText(Integer.toString(seconds));
-
     }
-
+    
+    // bierje toevoegen method
     private void addSomeBeer(int aantal) {
             for (int i=0; i<aantal; i++ ){
                 promilleInBlood += promillePerBeer;
